@@ -38,7 +38,7 @@ COPY --from=download /repositories/ ${ROOT}/repositories/
 RUN mkdir ${ROOT}/interrogate && cp ${ROOT}/repositories/clip-interrogator/clip_interrogator/data/* ${ROOT}/interrogate
 
 RUN --mount=type=cache,target=/root/.cache/pip \
-  pip install pyngrok xformers==0.0.31 \
+  pip install pyngrok xformers==0.0.31 dctorch==0.1.2 \
   git+https://github.com/TencentARC/GFPGAN.git@7552a7791caad982045a7bbe5634bbf1cd5c8679 \
   git+https://github.com/openai/CLIP.git@dcba3cb2e2827b402d2701e7e1c7d9fed8a20ef1 \
   git+https://github.com/mlfoundations/open_clip.git@v2.32.0
