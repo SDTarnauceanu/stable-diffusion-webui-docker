@@ -14,7 +14,7 @@ RUN . /clone.sh generative-models https://github.com/Stability-AI/generative-mod
 RUN . /clone.sh stable-diffusion-webui-assets https://github.com/AUTOMATIC1111/stable-diffusion-webui-assets 6f7db241d2f8ba7457bac5ca9753331f0c266917
 
 
-FROM pytorch/pytorch:2.6.0-cuda12.6-cudnn8-runtime
+FROM pytorch/pytorch:2.7.1-cuda12.6-cudnn9-runtime
 
 ENV DEBIAN_FRONTEND=noninteractive PIP_PREFER_BINARY=1
 
