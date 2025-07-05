@@ -13,18 +13,14 @@ RUN . /clone.sh clip-interrogator https://github.com/pharmapsychotic/clip-interr
 RUN . /clone.sh generative-models https://github.com/Stability-AI/generative-models 0ad7de9a5cb53fd63d6d30a4f385485e72e08597
 RUN . /clone.sh stable-diffusion-webui-assets https://github.com/AUTOMATIC1111/stable-diffusion-webui-assets 6f7db241d2f8ba7457bac5ca9753331f0c266917
 
-
 FROM pytorch/pytorch:2.7.1-cuda12.6-cudnn9-runtime
 
 ENV DEBIAN_FRONTEND=noninteractive PIP_PREFER_BINARY=1
 
 RUN --mount=type=cache,target=/var/cache/apt \
   apt-get update && \
-  # we need those
   apt-get install -y fonts-dejavu-core rsync git jq moreutils aria2 \
-  # extensions needs those
   ffmpeg libglfw3-dev libgles2-mesa-dev pkg-config libcairo2 libcairo2-dev build-essential
-
 
 WORKDIR /
 RUN --mount=type=cache,target=/root/.cache/pip \
@@ -33,6 +29,8 @@ RUN --mount=type=cache,target=/root/.cache/pip \
   git reset --hard v1.10.1 && \
   pip install -r requirements_versions.txt
 
+# Patch gradio after it’s installed
+RUN sed -i 's/in_app_dir = .*/in_app_dir = True/g' $(python -c "import gradio; print(gradio.__file__.replace('__init__.py','routes.py'))")
 
 ENV ROOT=/stable-diffusion-webui
 
@@ -45,18 +43,12 @@ RUN --mount=type=cache,target=/root/.cache/pip \
   git+https://github.com/openai/CLIP.git@dcba3cb2e2827b402d2701e7e1c7d9fed8a20ef1 \
   git+https://github.com/mlfoundations/open_clip.git@v2.32.0
 
-# there seems to be a memory leak (or maybe just memory not being freed fast enough) that is fixed by this version of malloc
-# maybe move this up to the dependencies list.
 RUN apt-get -y install libgoogle-perftools-dev && apt-get clean
 ENV LD_PRELOAD=libtcmalloc.so
 
 COPY . /docker
 
-RUN \
-  # mv ${ROOT}/style.css ${ROOT}/user.css && \
-  # one of the ugliest hacks I ever wrote \
-  sed -i 's/in_app_dir = .*/in_app_dir = True/g' /opt/conda/lib/python3.10/site-packages/gradio/routes.py && \
-  git config --global --add safe.directory '*'
+RUN git config --global --add safe.directory '*'
 
 WORKDIR ${ROOT}
 ENV NVIDIA_VISIBLE_DEVICES=all
