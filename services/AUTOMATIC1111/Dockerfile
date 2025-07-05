@@ -41,8 +41,8 @@ RUN mkdir ${ROOT}/interrogate && cp ${ROOT}/repositories/clip-interrogator/clip_
 
 RUN --mount=type=cache,target=/root/.cache/pip \
   pip install pyngrok xformers==0.0.31 \
-  git+https://github.com/TencentARC/GFPGAN.git@8d2447a2d918f8eba5a4a01463fd48e45126a379 \
-  git+https://github.com/openai/CLIP.git@d50d76daa670286dd6cacf3bcd80b5e4823fc8e1 \
+  git+https://github.com/TencentARC/GFPGAN.git@7552a7791caad982045a7bbe5634bbf1cd5c8679 \
+  git+https://github.com/openai/CLIP.git@dcba3cb2e2827b402d2701e7e1c7d9fed8a20ef1 \
   git+https://github.com/mlfoundations/open_clip.git@v2.32.0
 
 # there seems to be a memory leak (or maybe just memory not being freed fast enough) that is fixed by this version of malloc
